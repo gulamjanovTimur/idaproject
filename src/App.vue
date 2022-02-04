@@ -1,32 +1,35 @@
 <template>
   <div id="app">
-    <div id="nav">
-      <router-link to="/">Home</router-link> |
-      <router-link to="/about">About</router-link>
-    </div>
-    <router-view />
+    <CreateProduct />
   </div>
 </template>
 
+<script>
+import CreateProduct from "./components/CreateProduct";
+export default {
+  name: "App",
+  components: {
+    CreateProduct,
+  },
+};
+</script>
+
 <style lang="scss">
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
+@font-face {
+  font-family: "Source Sans Pro";
+  font-weight: normal;
+  src: url("./assets/fonts/SourceSansPro-Regular.ttf");
 }
-
-#nav {
+* {
+  font-family: Source Sans Pro;
+}
+#app {
   padding: 30px;
-
-  a {
-    font-weight: bold;
-    color: #2c3e50;
-
-    &.router-link-exact-active {
-      color: #42b983;
-    }
-  }
+  min-height: 100vh;
+  box-sizing: border-box;
+  background-color: #e5e5e5;
+}
+body {
+  margin: 0;
 }
 </style>
