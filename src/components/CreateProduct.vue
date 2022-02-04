@@ -1,50 +1,47 @@
 <template>
-  <div class="create-product">
-    <h1 class="create-product__title">Добавление товара</h1>
-    <form class="create-product__form create-product-form">
-      <div
-        class="create-product-form__label create-product-form__label--required"
-      >
-        Наименование товара
-      </div>
-      <input
-        placeholder="Введите наименование товара"
-        class="create-product-form__input"
-        v-model="form.name"
-      />
-      <div
-        class="create-product-form__label create-product-form__label--required"
-      >
-        Описание товара
-      </div>
-      <textarea
-        placeholder="Введите описание товара"
-        class="create-product-form__area"
-        v-model="form.description"
-      />
-      <div
-        class="create-product-form__label create-product-form__label--required"
-      >
-        Ссылка на изображение товара
-      </div>
-      <input
-        placeholder="Введите ссылку"
-        class="create-product-form__input"
-        v-model="form.linkImg"
-      />
-      <div
-        class="create-product-form__label create-product-form__label--required"
-      >
-        Цена товара
-      </div>
-      <input
-        placeholder="Введите цену"
-        class="create-product-form__input"
-        v-model="form.price"
-      />
-      <button class="create-product-form__btn">Добавить товар</button>
-    </form>
-  </div>
+  <form class="create-product-form">
+    <div
+      class="create-product-form__label create-product-form__label--required"
+    >
+      Наименование товара
+    </div>
+    <input
+      placeholder="Введите наименование товара"
+      class="create-product-form__input"
+      v-model="form.name"
+    />
+    <div
+      class="create-product-form__label create-product-form__label--required"
+    >
+      Описание товара
+    </div>
+    <textarea
+      placeholder="Введите описание товара"
+      class="create-product-form__area"
+      v-model="form.description"
+    />
+    <div
+      class="create-product-form__label create-product-form__label--required"
+    >
+      Ссылка на изображение товара
+    </div>
+    <input
+      placeholder="Введите ссылку"
+      class="create-product-form__input"
+      v-model="form.linkImg"
+    />
+    <div
+      class="create-product-form__label create-product-form__label--required"
+    >
+      Цена товара
+    </div>
+    <input
+      placeholder="Введите цену"
+      class="create-product-form__input"
+      v-model="form.price"
+    />
+    <button class="create-product-form__btn">Добавить товар</button>
+  </form>
 </template>
 <script>
 export default {
@@ -63,14 +60,9 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.create-product {
-  &__title {
-    color: #3f3f3f;
-    size: 28px;
-  }
-}
 .create-product-form {
   width: 332px;
+  min-width: 332px;
   padding: 24px;
   background-color: #fffefb;
   box-sizing: border-box;
@@ -112,6 +104,7 @@ export default {
   }
   &__area {
     padding: 10px 16px;
+    margin-bottom: 16px;
     font-size: 12px;
     border-radius: 4px;
     border: none;
