@@ -1,47 +1,46 @@
 <template>
-  <form class="create-product-form">
-    <div
-      class="create-product-form__label create-product-form__label--required"
-    >
-      Наименование товара
-    </div>
-    <input
-      placeholder="Введите наименование товара"
-      class="create-product-form__input"
-      v-model="form.name"
-    />
-    <div
-      class="create-product-form__label create-product-form__label--required"
-    >
-      Описание товара
-    </div>
-    <textarea
-      placeholder="Введите описание товара"
-      class="create-product-form__area"
-      v-model="form.description"
-    />
-    <div
-      class="create-product-form__label create-product-form__label--required"
-    >
-      Ссылка на изображение товара
-    </div>
-    <input
-      placeholder="Введите ссылку"
-      class="create-product-form__input"
-      v-model="form.linkImg"
-    />
-    <div
-      class="create-product-form__label create-product-form__label--required"
-    >
-      Цена товара
-    </div>
-    <input
-      placeholder="Введите цену"
-      class="create-product-form__input"
-      v-model="form.price"
-    />
-    <button class="create-product-form__btn">Добавить товар</button>
-  </form>
+  <div class="create-product">
+    <h2 class="create-product__title">Добавление товара</h2>
+    <form @submit.prevent="createProduct" class="create-product-form">
+      <div :key="index" v-for="(item, index) in form">
+        <div
+          :class="{ 'create-product-form__label--required': item.required }"
+          class="create-product-form__label"
+        >
+          {{ item.label }}
+        </div>
+        <div class="input-wrapper" v-if="item.type === 'input'">
+          <input
+            :class="{
+              'input-wrapper__input--validate-error': errors[item.key],
+            }"
+            :placeholder="item.placeholder"
+            class="input-wrapper__input"
+            :type="item.key === 'price' ? 'number' : 'text'"
+            v-model="item.model"
+          />
+          <span class="input-wrapper__error" v-if="errors[item.key]">{{
+            errors[item.key]
+          }}</span>
+        </div>
+        <textarea
+          v-else
+          :placeholder="item.placeholder"
+          class="create-product-form__area"
+          v-model="item.model"
+        />
+      </div>
+      <button
+        :class="{
+          'create-product-form__btn--validate-success':
+            form.name.model && form.price.model && form.linkImg.model,
+        }"
+        class="create-product-form__btn"
+      >
+        Добавить товар
+      </button>
+    </form>
+  </div>
 </template>
 <script>
 export default {
@@ -49,19 +48,86 @@ export default {
   data() {
     return {
       form: {
-        price: "",
-        name: "",
-        description: "",
-        linkImg: "",
+        name: {
+          label: "Наименование товара",
+          required: true,
+          model: "",
+          type: "input",
+          placeholder: "Введите наименование товара",
+          key: "name",
+        },
+        description: {
+          label: "Описание товара",
+          required: false,
+          model: "",
+          type: "area",
+          placeholder: "Введите описание товара",
+          key: "description",
+        },
+        linkImg: {
+          label: "Ссылка на изображение товара",
+          required: true,
+          model: "",
+          type: "input",
+          placeholder: "Введите ссылку",
+          key: "linkImg",
+        },
+        price: {
+          label: "Цена товара",
+          required: true,
+          model: "",
+          type: "input",
+          placeholder: "Введите цену",
+          key: "price",
+        },
       },
+      errors: {},
     };
+  },
+  methods: {
+    createProduct() {
+      if (
+        this.form.price.model &&
+        this.form.name.model &&
+        this.form.linkImg.model
+      ) {
+        this.errors = {};
+        this.$emit("add-product", {
+          name: this.form.name.model,
+          price: this.form.price.model,
+          linkImg: this.form.linkImg.model,
+          description: this.form.description.model,
+        });
+      } else {
+        this.errors = {};
+        for (const key in this.form) {
+          const element = this.form[key];
+          if (element.required && !element.model) {
+            this.errors = {
+              ...this.errors,
+              [key]: "Поле является обязательным",
+            };
+          }
+        }
+      }
+    },
   },
 };
 </script>
 
 <style lang="scss" scoped>
+.create-product {
+  &__title {
+    line-height: 1;
+    color: #3f3f3f;
+    font-size: 28px;
+    margin-top: 0;
+    margin-bottom: 16px;
+  }
+}
 .create-product-form {
   width: 332px;
+  max-height: 100%;
   min-width: 332px;
   padding: 24px;
   background-color: #fffefb;
@@ -87,21 +153,6 @@ export default {
       }
     }
   }
-  &__input {
-    box-sizing: border-box;
-    padding: 10px 16px;
-    font-size: 12px;
-    height: 36px;
-    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
-    border: none;
-    width: 100%;
-    margin-bottom: 16px;
-    border-radius: 4px;
-    color: #3f3f3f;
-    &::placeholder {
-      color: #b4b4b4;
-    }
-  }
   &__area {
     padding: 10px 16px;
     margin-bottom: 16px;
@@ -117,6 +168,9 @@ export default {
     &::placeholder {
       color: #b4b4b4;
     }
+    &:focus {
+      outline: 1px solid green;
+    }
   }
   &__btn {
     background-color: #eeeeee;
@@ -126,6 +180,78 @@ export default {
     font-size: 12px;
     color: #b4b4b4;
     border-radius: 10px;
+    margin-top: 8px;
+    cursor: pointer;
+    transition: 0.3s;
+    &:hover {
+      background-color: #b4b4b4;
+      color: #eeeeee;
+    }
+    &:active {
+      background-color: #8d8d8d;
+      color: #ffffff;
+    }
+    &--validate-success {
+      background-color: #7bae73;
+      color: #ffffff;
+      &:hover {
+        background-color: #2fa71c;
+        color: #ffffff;
+      }
+      &:active {
+        background-color: #107a00;
+        color: #ffffff;
+      }
+    }
+  }
+}
+.input-wrapper {
+  position: relative;
+  &__input {
+    box-sizing: border-box;
+    padding: 10px 16px;
+    font-size: 12px;
+    height: 36px;
+    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+    border: none;
+    width: 100%;
+    margin-bottom: 16px;
+    border-radius: 4px;
+    color: #3f3f3f;
+    &--validate-error {
+      outline: 1px solid #ff8484 !important;
+    }
+    &::placeholder {
+      color: #b4b4b4;
+    }
+    &:focus {
+      outline: 1px solid green;
+    }
+  }
+  &__error {
+    position: absolute;
+    bottom: 1px;
+    left: 0;
+    color: #ff8484;
+    font-size: 8px;
+  }
+}
+// delete arrows input type
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+input[type="number"] {
+  -moz-appearance: textfield;
+}
+@media (max-width: 1025px) {
+  .create-product-form {
+    width: 100%;
+    min-width: 100%;
+    padding: 16px;
   }
 }
 </style>
